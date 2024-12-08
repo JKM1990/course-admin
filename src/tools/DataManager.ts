@@ -131,3 +131,42 @@ export async function deleteTechnology(request: NextRequest, id:string) {
         mongoClient.close();
     }
 }
+
+export async function createCourse(request: NextRequest) {
+    let mongoClient: MongoClient = new MongoClient(MONGO_URL);
+    try {
+        await mongoClient.connect();
+        const body: any = await request.json();
+
+        // Sanitize input
+        const sanitizedCourse = {
+            code: sanitizeHtml(body.code),
+            name: sanitizeHtml(body.name)
+        };
+
+        // Check if course code already exists
+        const existingCourse = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .findOne({ code: sanitizedCourse.code });
+
+        if (existingCourse) {
+            return NextResponse.json(
+                { error: "Course code already exists" },
+                { status: 400 }
+            );
+        }
+
+        // Insert new course
+        const result: InsertOneResult = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .insertOne(sanitizedCourse);
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    } finally {
+        mongoClient.close();
+    }
+}
