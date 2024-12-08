@@ -6,11 +6,12 @@ export default function AddTechnology() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [difficulty, setDifficulty] = useState('1');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // testing function
-    console.log('Submitted:', { name, description });
+    console.log('Submitted:', { name, description, difficulty });
   };
 
 
@@ -39,6 +40,21 @@ export default function AddTechnology() {
             required
             className="w-full p-2 border rounded bg-white h-32"
           />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-2">Difficulty:</label>
+          <select
+            value={difficulty}
+            onChange={(e) => setDifficulty(e.target.value)}
+            className="p-2 border rounded bg-white"
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
         </div>
 
         <div className="flex space-x-2">
