@@ -1,12 +1,28 @@
 "use client"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { getAllData } from '@/tools/DataManager';
+import type { CourseDocument } from '@/tools/data.model';
+
 
 export default function AddTechnology() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [difficulty, setDifficulty] = useState('1');
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
+  const [courses, setCourses] = useState<CourseDocument[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      const response = await fetch('/api/all');
+      const data = await response.json();
+      setCourses(data.courses);
+    };
+    fetchCourses();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +71,33 @@ export default function AddTechnology() {
             <option value="4">4</option>
             <option value="5">5</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-gray-700 mb-2">Used in courses:</label>
+          <div className="space-y-2">
+            {courses.map((course) => (
+              <div key={course.code}>
+                <label className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedCourses.includes(course.code)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedCourses([...selectedCourses, course.code]);
+                      } else {
+                        setSelectedCourses(
+                          selectedCourses.filter(code => code !== course.code)
+                        );
+                      }
+                    }}
+                    className="mr-2"
+                  />
+                  {course.code} {course.name}
+                </label>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="flex space-x-2">
