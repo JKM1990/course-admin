@@ -170,3 +170,39 @@ export async function createCourse(request: NextRequest) {
         mongoClient.close();
     }
 }
+
+export async function updateCourse(request: NextRequest, id: string) {
+    let mongoClient: MongoClient = new MongoClient(MONGO_URL);
+    try {
+        await mongoClient.connect();
+        
+        const courseId: ObjectId = new ObjectId(sanitizeHtml(id));
+        const body: any = await request.json();
+
+        // Sanitize input
+        const sanitizedCourse = {
+            name: sanitizeHtml(body.name)
+        };
+
+        const result: UpdateResult = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .updateOne(
+                { _id: courseId },
+                { $set: sanitizedCourse }
+            );
+
+        if (result.matchedCount <= 0) {
+            return NextResponse.json(
+                { error: "No course found with ID" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    } finally {
+        mongoClient.close();
+    }
+}
