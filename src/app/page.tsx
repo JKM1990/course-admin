@@ -14,7 +14,7 @@ export default async function Home() {
           <div className="flex items-center mb-4">
             <h2 className="text-xl text-emerald-600">Technologies:</h2>
             <Link 
-              href="/technology/add" 
+              href="/technologies/add" 
               className="ml-2 text-2xl text-gray-600 hover:text-emerald-600"
             >
               +
@@ -23,10 +23,10 @@ export default async function Home() {
           <div className="space-y-2">
             {technologies.map((tech) => (
               <div key={tech._id} className="flex items-center space-x-2">
-                <Link href={`/technology/edit/${tech._id}`} className="hover:text-emerald-600">
+                <Link href={`/technologies/edit/${tech._id}`} className="hover:text-emerald-600">
                   ✎
                 </Link>
-                <Link href={`/technology/delete/${tech._id}`} className="hover:text-emerald-600">
+                <Link href={`/technologies/delete/${tech._id}`} className="hover:text-emerald-600">
                   🗑
                 </Link>
                 <span className="text-gray-700">{tech.name}</span>
@@ -40,7 +40,7 @@ export default async function Home() {
           <div className="flex items-center mb-4">
             <h2 className="text-xl text-emerald-600">Courses:</h2>
             <Link 
-              href="/course/add" 
+              href="/courses/add" 
               className="ml-2 text-2xl text-gray-600 hover:text-emerald-600"
             >
               +
@@ -49,10 +49,10 @@ export default async function Home() {
           <div className="space-y-2">
             {courses.map((course) => (
               <div key={course._id} className="flex items-center space-x-2">
-                <Link href={`/course/edit/${course._id}`} className="hover:text-emerald-600">
+                <Link href={`/courses/edit/${course._id}`} className="hover:text-emerald-600">
                   ✎
                 </Link>
-                <Link href={`/course/delete/${course._id}`} className="hover:text-emerald-600">
+                <Link href={`/courses/delete/${course._id}`} className="hover:text-emerald-600">
                   🗑
                 </Link>
                 <span className="text-gray-700">{course.code} {course.name}</span>
