@@ -1,32 +1,39 @@
 import { MongoClient, Collection, InsertOneResult, ObjectId, UpdateResult, DeleteResult } from "mongodb";
 import { NextRequest, NextResponse } from 'next/server';
 import sanitizeHtml from 'sanitize-html';
-import { Technology, Course } from "@/tools/data.model";
+import { Technology, Course, CourseDocument, TechRosterData } from "@/tools/data.model";
 
 // MongoDB constants
 const MONGO_URL:string = "mongodb://mongo:27017/";
 const MONGO_DB_NAME:string = "dbTechs";	
 const MONGO_COLLECTION_TECHS:string = "technologies";
+const MONGO_COLLECTION_COURSES: string = "courses";
 
-export async function getTechnologies() {
-    // construct a MongoClient object
+// gets the technologies and courses data
+export async function getAllData() {
     let mongoClient: MongoClient = new MongoClient(MONGO_URL);
 
-    let techArray:Technology[];
     try {
         await mongoClient.connect();
-        // get JSON data from mongoDB server (ASYNC task)
-        techArray = await mongoClient.db(MONGO_DB_NAME).collection<Technology>(MONGO_COLLECTION_TECHS).find().toArray();
-        // need to convert ObjectId objects to strings
-        techArray.forEach((tech:Technology) => tech._id = tech._id.toString());
-    } catch (error:any) {
+        const db = mongoClient.db(MONGO_DB_NAME);
+        
+        // Grab both collections in one request using Promise constructor
+        const [technologies, courses] = await Promise.all([
+            db.collection<Technology>(MONGO_COLLECTION_TECHS).find().toArray(),
+            db.collection<CourseDocument>(MONGO_COLLECTION_COURSES).find().toArray()
+        ]);
+
+        // Convert ObjectIds to strings
+        technologies.forEach((tech: any) => tech._id = tech._id.toString());
+        courses.forEach((course: any) => course._id = course._id.toString());
+
+        return { technologies, courses };
+    } catch (error: any) {
         console.log(`>>> ERROR : ${error.message}`);
         throw error;
     } finally {
         mongoClient.close();
     }
-
-    return techArray;
 }
 
 export async function createTechnology(request: NextRequest) {
@@ -120,6 +127,129 @@ export async function deleteTechnology(request: NextRequest, id:string) {
         }
     } catch (error:any) {
         return NextResponse.json({error: error.message}, {status: 500});
+    } finally {
+        mongoClient.close();
+    }
+}
+
+export async function createCourse(request: NextRequest) {
+    let mongoClient: MongoClient = new MongoClient(MONGO_URL);
+    try {
+        await mongoClient.connect();
+        const body: any = await request.json();
+
+        // Sanitize input
+        const sanitizedCourse = {
+            code: sanitizeHtml(body.code),
+            name: sanitizeHtml(body.name)
+        };
+
+        // Check if course code already exists
+        const existingCourse = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .findOne({ code: sanitizedCourse.code });
+
+        if (existingCourse) {
+            return NextResponse.json(
+                { error: "Course code already exists" },
+                { status: 400 }
+            );
+        }
+
+        // Insert new course
+        const result: InsertOneResult = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .insertOne(sanitizedCourse);
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    } finally {
+        mongoClient.close();
+    }
+}
+
+export async function updateCourse(request: NextRequest, id: string) {
+    let mongoClient: MongoClient = new MongoClient(MONGO_URL);
+    try {
+        await mongoClient.connect();
+        
+        const courseId: ObjectId = new ObjectId(sanitizeHtml(id));
+        const body: any = await request.json();
+
+        // Sanitize input
+        const sanitizedCourse = {
+            name: sanitizeHtml(body.name)
+        };
+
+        const result: UpdateResult = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .updateOne(
+                { _id: courseId },
+                { $set: sanitizedCourse }
+            );
+
+        if (result.matchedCount <= 0) {
+            return NextResponse.json(
+                { error: "No course found with ID" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    } finally {
+        mongoClient.close();
+    }
+}
+
+export async function deleteCourse(request: NextRequest, id: string) {
+    let mongoClient: MongoClient = new MongoClient(MONGO_URL);
+    try {
+        await mongoClient.connect();
+        
+        // Get course code for deletion
+        const courseId: ObjectId = new ObjectId(sanitizeHtml(id));
+        const course = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .findOne({ _id: courseId });
+
+        if (!course) {
+            return NextResponse.json(
+                { error: "No course found with ID" },
+                { status: 404 }
+            );
+        }
+
+        // Delete the course
+        const result: DeleteResult = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .deleteOne({ _id: courseId });
+
+        // Update technologies to remove references to the deleted course using $pull 
+        await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_TECHS)
+            .updateMany(
+                {},
+                { 
+                    "$pull": { 
+                        "courses": { 
+                            "code": course.code 
+                        } 
+                    } 
+                } as any
+            );
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
     } finally {
         mongoClient.close();
     }
