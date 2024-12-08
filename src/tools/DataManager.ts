@@ -206,3 +206,51 @@ export async function updateCourse(request: NextRequest, id: string) {
         mongoClient.close();
     }
 }
+
+export async function deleteCourse(request: NextRequest, id: string) {
+    let mongoClient: MongoClient = new MongoClient(MONGO_URL);
+    try {
+        await mongoClient.connect();
+        
+        // Get course code for deletion
+        const courseId: ObjectId = new ObjectId(sanitizeHtml(id));
+        const course = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .findOne({ _id: courseId });
+
+        if (!course) {
+            return NextResponse.json(
+                { error: "No course found with ID" },
+                { status: 404 }
+            );
+        }
+
+        // Delete the course
+        const result: DeleteResult = await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_COURSES)
+            .deleteOne({ _id: courseId });
+
+        // Update technologies to remove references to the deleted course using $pull 
+        await mongoClient
+            .db(MONGO_DB_NAME)
+            .collection(MONGO_COLLECTION_TECHS)
+            .updateMany(
+                {},
+                { 
+                    "$pull": { 
+                        "courses": { 
+                            "code": course.code 
+                        } 
+                    } 
+                } as any
+            );
+
+        return NextResponse.json(result, { status: 200 });
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    } finally {
+        mongoClient.close();
+    }
+}
