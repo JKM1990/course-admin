@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
-import { createDoc } from '@/tools/DataManager';
+import { createTechnology } from '@/tools/DataManager';
 
 export function POST(request: NextRequest) {
-    return createDoc(request);
+    return createTechnology(request);
 }
