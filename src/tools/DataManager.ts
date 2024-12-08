@@ -1,32 +1,39 @@
 import { MongoClient, Collection, InsertOneResult, ObjectId, UpdateResult, DeleteResult } from "mongodb";
 import { NextRequest, NextResponse } from 'next/server';
 import sanitizeHtml from 'sanitize-html';
-import { Technology, Course } from "@/tools/data.model";
+import { Technology, Course, CourseDocument, TechRosterData } from "@/tools/data.model";
 
 // MongoDB constants
 const MONGO_URL:string = "mongodb://mongo:27017/";
 const MONGO_DB_NAME:string = "dbTechs";	
 const MONGO_COLLECTION_TECHS:string = "technologies";
+const MONGO_COLLECTION_COURSES: string = "courses";
 
-export async function getTechnologies() {
-    // construct a MongoClient object
+// gets the technologies and courses data
+export async function getAllData() {
     let mongoClient: MongoClient = new MongoClient(MONGO_URL);
 
-    let techArray:Technology[];
     try {
         await mongoClient.connect();
-        // get JSON data from mongoDB server (ASYNC task)
-        techArray = await mongoClient.db(MONGO_DB_NAME).collection<Technology>(MONGO_COLLECTION_TECHS).find().toArray();
-        // need to convert ObjectId objects to strings
-        techArray.forEach((tech:Technology) => tech._id = tech._id.toString());
-    } catch (error:any) {
+        const db = mongoClient.db(MONGO_DB_NAME);
+        
+        // Grab both collections in one request using Promise constructor
+        const [technologies, courses] = await Promise.all([
+            db.collection<Technology>(MONGO_COLLECTION_TECHS).find().toArray(),
+            db.collection<CourseDocument>(MONGO_COLLECTION_COURSES).find().toArray()
+        ]);
+
+        // Convert ObjectIds to strings
+        technologies.forEach((tech: any) => tech._id = tech._id.toString());
+        courses.forEach((course: any) => course._id = course._id.toString());
+
+        return { technologies, courses };
+    } catch (error: any) {
         console.log(`>>> ERROR : ${error.message}`);
         throw error;
     } finally {
         mongoClient.close();
     }
-
-    return techArray;
 }
 
 export async function createTechnology(request: NextRequest) {
