@@ -1,19 +1,17 @@
-"use client"
+'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getAllData } from '@/tools/DataManager';
 import type { CourseDocument } from '@/tools/data.model';
-
+import { sendJSONData } from '@/tools/Toolkit';
 
 export default function AddTechnology() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [difficulty, setDifficulty] = useState('1');
-  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
   const [courses, setCourses] = useState<CourseDocument[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -26,10 +24,36 @@ export default function AddTechnology() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // testing function
-    console.log('Submitted:', { name, description, difficulty });
-  };
+    
+    const response = await sendJSONData(
+      '/api/technologies/create',
+      {
+        name,
+        description,
+        difficulty: parseInt(difficulty),
+        courses: selectedCourses.map(courseCode => {
+          const course = courses.find(c => c.code === courseCode);
+          return {
+            code: courseCode,
+            name: course?.name || ''
+          };
+        })
+      },
+      'POST'
+    );
 
+    if (!response) {
+      console.error('No response received');
+      return;
+    }
+
+    if (response.status === 200) {
+      router.push('/');
+      router.refresh();
+    } else {
+      console.error('Error creating technology:', response.data);
+    }
+  };
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
@@ -104,14 +128,9 @@ export default function AddTechnology() {
           <button type="submit" className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
             Ok
           </button>
-          <button
-            type="button"
-            // navigates back to main page
-            onClick={() => router.push('/')}
-            className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600"
-          >
+          <Link href="/" className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600">
             Cancel
-          </button>
+          </Link>
         </div>
       </form>
 
