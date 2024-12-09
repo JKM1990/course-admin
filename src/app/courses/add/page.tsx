@@ -9,12 +9,40 @@ export default function AddCourse() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const response = await sendJSONData(
+      "/api/courses/create",
+      {
+        code,
+        name
+      },
+      "POST"
+    );
+
+    if (!response) {
+      console.error("No response received");
+      return;
+    }
+
+    if (response.status === 200) {
+      router.push("/");
+      router.refresh();
+    } else if (response.status === 400) {
+      // Handle duplicate course code error
+      console.error("Course code already exists");
+    } else {
+      console.error("Error creating course:", response.data);
+    }
+  };
+
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <h1 className="text-2xl text-gray-700 mb-8">_Technology Roster : Course Admin</h1>
       <h2 className="text-xl text-emerald-600 mb-6">Add New Course:</h2>
 
-      <form className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-gray-700 mb-2">Course Code:</label>
           <input
