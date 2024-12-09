@@ -1,4 +1,4 @@
-import type { NextRequest } from 'next/server'
+import type { NextRequest } from "next/server"
 import { deleteTechnology } from "@/tools/DataManager";
 
 export async function DELETE(

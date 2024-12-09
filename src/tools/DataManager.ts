@@ -1,6 +1,6 @@
 import { MongoClient, Collection, InsertOneResult, ObjectId, UpdateResult, DeleteResult } from "mongodb";
-import { NextRequest, NextResponse } from 'next/server';
-import sanitizeHtml from 'sanitize-html';
+import { NextRequest, NextResponse } from "next/server";
+import sanitizeHtml from "sanitize-html";
 import { Technology, Course, CourseDocument, TechRosterData } from "@/tools/data.model";
 
 // MongoDB constants

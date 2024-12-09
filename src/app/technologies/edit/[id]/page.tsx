@@ -1,23 +1,23 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import type { Technology, Course } from '@/tools/data.model';
-import { sendJSONData } from '@/tools/Toolkit';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import type { Technology, Course } from "@/tools/data.model";
+import { sendJSONData } from "@/tools/Toolkit";
 
 
 export default function EditTechnology({ params }: { params: { id: string } }) {
     const router = useRouter();
     const [technology, setTechnology] = useState<Technology | null>(null);
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [difficulty, setDifficulty] = useState('1');
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [difficulty, setDifficulty] = useState("1");
     const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
     useEffect(() => {
         const fetchTechnology = async () => {
-            const response = await fetch('/api/all');
+            const response = await fetch("/api/all");
             const data = await response.json();
             const tech = data.technologies.find((t: Technology) => t._id === params.id);
 
@@ -47,23 +47,23 @@ export default function EditTechnology({ params }: { params: { id: string } }) {
               const course = courses.find(c => c.code === courseCode);
               return {
                 code: courseCode,
-                name: course?.name || ''
+                name: course?.name || ""
               };
             })
           },
-          'PUT'
+          "PUT"
         );
     
         if (!response) {
-          console.error('No response received');
+          console.error("No response received");
           return;
         }
     
         if (response.status === 200) {
-          router.push('/');
+          router.push("/");
           router.refresh();
         } else {
-          console.error('Error updating technology:', response.data);
+          console.error("Error updating technology:", response.data);
         }
       };
 
@@ -151,7 +151,7 @@ export default function EditTechnology({ params }: { params: { id: string } }) {
             </form>
 
             <footer className="mt-8 text-gray-600">
-                Web App powered by <span className="text-emerald-600">NextJS</span> |{' '}
+                Web App powered by <span className="text-emerald-600">NextJS</span> |{" "}
                 <span className="text-emerald-600">MongoDB</span>
             </footer>
         </div>

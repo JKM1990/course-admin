@@ -1,5 +1,5 @@
-import { getAllData } from '@/tools/DataManager';
-import Link from 'next/link';
+import { getAllData } from "@/tools/DataManager";
+import Link from "next/link";
 
 export default async function Home() {
   const { technologies, courses } = await getAllData();
@@ -63,8 +63,8 @@ export default async function Home() {
       </div>
 
       <footer className="mt-8 text-gray-600">
-        Web App powered by{' '}
-        <span className="text-emerald-600">NextJS</span> |{' '}
+        Web App powered by{" "}
+        <span className="text-emerald-600">NextJS</span> |{" "}
         <span className="text-emerald-600">MongoDB</span>
       </footer>
     </div>
