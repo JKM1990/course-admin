@@ -17,7 +17,8 @@ export default function AddCourse() {
     const response = await sendJSONData(
       "/api/courses/create",
       {
-        code,
+        // convert the course code entered, to uppercase to check for distinct entry
+        code: code.toUpperCase(),
         name
       },
       "POST"
