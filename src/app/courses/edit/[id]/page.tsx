@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CourseDocument } from "@/tools/data.model";
+import { sendJSONData } from "@/tools/Toolkit";
 
 export default function EditCourse({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -23,6 +24,31 @@ export default function EditCourse({ params }: { params: { id: string } }) {
     fetchCourse();
   }, [params.id]);
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    const response = await sendJSONData(
+      `/api/courses/update/${params.id}`,
+      { name },
+      "PUT"
+    );
+
+    if (!response) {
+      setErrorMessage("No response received");
+      return;
+    }
+
+    if (response.status === 200) {
+      router.push("/");
+      router.refresh();
+    } else if (response.status === 404) {
+      setErrorMessage("Course not found");
+    } else {
+      setErrorMessage("Error updating course");
+    }
+  };
+
   if (!course) {
     return <div>Loading...</div>;
   }
@@ -32,7 +58,7 @@ export default function EditCourse({ params }: { params: { id: string } }) {
       <h1 className="text-2xl text-gray-700 mb-8">_Technology Roster : Course Admin</h1>
       <h2 className="text-xl text-emerald-600 mb-6">Edit Course:</h2>
 
-      <form className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {errorMessage && (
           <div className="text-red-600 mb-4">
             {errorMessage}
