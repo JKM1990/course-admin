@@ -1,8 +1,10 @@
-'use client';
+"use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { Technology, Course } from '@/tools/data.model';
+import { sendJSONData } from '@/tools/Toolkit';
+
 
 export default function EditTechnology({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -31,6 +33,39 @@ export default function EditTechnology({ params }: { params: { id: string } }) {
         };
         fetchTechnology();
     }, [params.id]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        const response = await sendJSONData(
+          `/api/technologies/update/${params.id}`,
+          {
+            name,
+            description,
+            difficulty: parseInt(difficulty),
+            courses: selectedCourses.map(courseCode => {
+              const course = courses.find(c => c.code === courseCode);
+              return {
+                code: courseCode,
+                name: course?.name || ''
+              };
+            })
+          },
+          'PUT'
+        );
+    
+        if (!response) {
+          console.error('No response received');
+          return;
+        }
+    
+        if (response.status === 200) {
+          router.push('/');
+          router.refresh();
+        } else {
+          console.error('Error updating technology:', response.data);
+        }
+      };
 
     if (!technology) {
         return <div>Loading...</div>;
