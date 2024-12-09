@@ -60,7 +60,7 @@ async function sendJSONData(sendURL: string, sendJSON: any, requestType:string, 
             method: requestType,
             headers: { "content-type": "application/json" },
             body: JSON.stringify(sendJSON),
-            cache: 'no-store'
+            cache: "no-store"
         });
         const result:any = await response.json();
         return { data:result, status:response.status };

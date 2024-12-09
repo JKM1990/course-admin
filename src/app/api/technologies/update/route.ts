@@ -1,4 +1,4 @@
-import type { NextRequest } from 'next/server'
+import type { NextRequest } from "next/server"
 import { updateTechnology } from "@/tools/DataManager";
 
 export async function PUT(

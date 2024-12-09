@@ -1,21 +1,21 @@
 "use client";
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import type { CourseDocument } from '@/tools/data.model';
-import { sendJSONData } from '@/tools/Toolkit';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import type { CourseDocument } from "@/tools/data.model";
+import { sendJSONData } from "@/tools/Toolkit";
 
 export default function AddTechnology() {
   const router = useRouter();
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [difficulty, setDifficulty] = useState('1');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [difficulty, setDifficulty] = useState("1");
   const [courses, setCourses] = useState<CourseDocument[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const response = await fetch('/api/all');
+      const response = await fetch("/api/all");
       const data = await response.json();
       setCourses(data.courses);
     };
@@ -26,7 +26,7 @@ export default function AddTechnology() {
     e.preventDefault();
     
     const response = await sendJSONData(
-      '/api/technologies/create',
+      "/api/technologies/create",
       {
         name,
         description,
@@ -35,23 +35,23 @@ export default function AddTechnology() {
           const course = courses.find(c => c.code === courseCode);
           return {
             code: courseCode,
-            name: course?.name || ''
+            name: course?.name || ""
           };
         })
       },
-      'POST'
+      "POST"
     );
 
     if (!response) {
-      console.error('No response received');
+      console.error("No response received");
       return;
     }
 
     if (response.status === 200) {
-      router.push('/');
+      router.push("/");
       router.refresh();
     } else {
-      console.error('Error creating technology:', response.data);
+      console.error("Error creating technology:", response.data);
     }
   };
 
@@ -135,7 +135,7 @@ export default function AddTechnology() {
       </form>
 
       <footer className="mt-8 text-gray-600">
-        Web App powered by <span className="text-emerald-600">NextJS</span> |{' '}
+        Web App powered by <span className="text-emerald-600">NextJS</span> |{" "}
         <span className="text-emerald-600">MongoDB</span>
       </footer>
     </div>

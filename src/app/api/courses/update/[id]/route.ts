@@ -1,5 +1,5 @@
-import type { NextRequest } from 'next/server';
-import { updateCourse } from '@/tools/DataManager';
+import type { NextRequest } from "next/server";
+import { updateCourse } from "@/tools/DataManager";
 
 export async function PUT(
     request: NextRequest,

@@ -1,5 +1,5 @@
-import type { NextRequest } from 'next/server';
-import { deleteCourse } from '@/tools/DataManager';
+import type { NextRequest } from "next/server";
+import { deleteCourse } from "@/tools/DataManager";
 
 export async function DELETE(
     request: NextRequest,
