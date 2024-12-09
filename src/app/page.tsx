@@ -1,8 +1,12 @@
 import { getAllData } from "@/tools/DataManager";
 import Link from "next/link";
 
+// ensure revalidation of data on every request
+export const revalidate = 0;
+
 export default async function Home() {
   const { technologies, courses } = await getAllData();
+  
 
   return (
     <div className="p-4 max-w-7xl mx-auto">
