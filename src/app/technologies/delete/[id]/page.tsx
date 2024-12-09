@@ -8,6 +8,16 @@ export default function DeleteTechnology({ params }: { params: { id: string } })
   const router = useRouter();
   const [technology, setTechnology] = useState<Technology | null>(null);
 
+  useEffect(() => {
+    const fetchTechnology = async () => {
+      const response = await fetch("/api/all");
+      const data = await response.json();
+      const tech = data.technologies.find((t: Technology) => t._id === params.id);
+      setTechnology(tech || null);
+    };
+    fetchTechnology();
+  }, [params.id]);
+
   if (!technology) {
     return <div>Loading...</div>;
   }
