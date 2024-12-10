@@ -5,6 +5,7 @@ import Link from "next/link";
 import { EditCourseProps } from "@/tools/data.model";
 import { sendJSONData } from "@/tools/Toolkit";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import sanitizeHtml from "sanitize-html";
 
 export default function EditCourse({ course }: EditCourseProps) {
   const router = useRouter();
@@ -17,9 +18,11 @@ export default function EditCourse({ course }: EditCourseProps) {
     setIsLoading(true);
     setErrorMessage("");
 
+    const sanitizedName = sanitizeHtml(name);
+
     const response = await sendJSONData(
       `/api/courses/update/${course._id}`,
-      { name },
+      { name: sanitizedName },
       "PUT"
     );
 
