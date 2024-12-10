@@ -60,7 +60,7 @@ export default function EditCourse({ course }: EditCourseProps) {
                 value={course.code}
                 maxLength={8}
                 disabled
-                className="w-full p-2 border rounded bg-gray-100"
+                className="w-full p-2 border rounded bg-gray-100 max-w-[98px]"
               />
             </div>
 
@@ -72,7 +72,7 @@ export default function EditCourse({ course }: EditCourseProps) {
                 onChange={(e) => setName(e.target.value)}
                 maxLength={100}
                 required
-                className="w-full p-2 border rounded bg-white"
+                className="w-full p-2 border rounded bg-white max-w-96"
               />
             </div>
 

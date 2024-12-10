@@ -60,7 +60,7 @@ export default function AddCourse() {
               onChange={(e) => setCode(e.target.value)}
               maxLength={8}
               required
-              className="w-full p-2 border rounded bg-white"
+              className="w-full p-2 border rounded bg-white max-w-28"
             />
           </div>
 
@@ -72,7 +72,7 @@ export default function AddCourse() {
               onChange={(e) => setName(e.target.value)}
               maxLength={100}
               required
-              className="w-full p-2 border rounded bg-white"
+              className="w-full p-2 border rounded bg-white max-w-96"
             />
           </div>
 

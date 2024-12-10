@@ -69,7 +69,7 @@ export default function EditTechnology({ technology, courses }: EditTechnologyPr
                 onChange={(e) => setName(e.target.value)}
                 maxLength={50}
                 required
-                className="w-full p-2 border rounded bg-white"
+                className="w-full p-2 border rounded bg-white max-w-56"
               />
             </div>
 
@@ -80,7 +80,7 @@ export default function EditTechnology({ technology, courses }: EditTechnologyPr
                 onChange={(e) => setDescription(e.target.value)}
                 maxLength={500}
                 required
-                className="w-full p-2 border rounded bg-white h-32"
+                className="w-full p-2 border rounded bg-white h-32 max-w-[500px]"
               />
             </div>
 
