@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { sendJSONData } from "@/tools/Toolkit";
+import sanitizeHtml from "sanitize-html";
 
 export default function AddCourse() {
   const router = useRouter();
@@ -14,12 +15,16 @@ export default function AddCourse() {
     e.preventDefault();
     setErrorMessage("");
 
+    // convert the course code entered, to uppercase to check for distinct entry
+    const sanitizedCode = sanitizeHtml(code.toUpperCase());
+    const sanitizedName = sanitizeHtml(name);
+
     const response = await sendJSONData(
       "/api/courses/create",
       {
-        // convert the course code entered, to uppercase to check for distinct entry
-        code: code.toUpperCase(),
-        name
+        
+        code: sanitizedCode,
+        name: sanitizedName
       },
       "POST"
     );
