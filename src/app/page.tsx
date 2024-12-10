@@ -12,7 +12,7 @@ export default async function Home() {
       <div className="p-4 max-w-4xl mx-auto">
         <h1 className="text-2xl text-gray-700 mb-8">_Technology Roster : Course Admin</h1>
 
-        <div className="grid grid-cols-[2fr_3fr] gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_3fr] gap-8">
           {/* Technologies Section */}
           <div>
             <div className="flex items-center mb-4">
