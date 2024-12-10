@@ -31,3 +31,15 @@ export interface EditTechnologyProps {
     technology: Technology;
     courses: CourseDocument[];
 }
+
+export interface DeleteTechnologyProps {
+    technology: Technology;
+}
+
+export interface EditCourseProps {
+    course: CourseDocument;
+}
+
+export interface DeleteCourseProps {
+    course: CourseDocument;
+}
