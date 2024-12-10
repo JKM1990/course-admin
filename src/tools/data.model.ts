@@ -21,3 +21,25 @@ export interface TechRosterData {
     technologies: Technology[];
     courses: CourseDocument[];
 }
+
+// Prop interfaces
+export interface AddTechnologyProps {
+    courses: Course[];
+}
+
+export interface EditTechnologyProps {
+    technology: Technology;
+    courses: CourseDocument[];
+}
+
+export interface DeleteTechnologyProps {
+    technology: Technology;
+}
+
+export interface EditCourseProps {
+    course: CourseDocument;
+}
+
+export interface DeleteCourseProps {
+    course: CourseDocument;
+}
