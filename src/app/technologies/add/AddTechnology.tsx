@@ -127,7 +127,7 @@ export default function AddTechnology({ courses }: AddTechnologyProps) {
               </div>
 
               <div className="flex space-x-2">
-              <button type="submit" className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600">
+                <button type="submit" className="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-emerald-600">
                   Ok
                 </button>
                 <Link
@@ -140,8 +140,22 @@ export default function AddTechnology({ courses }: AddTechnologyProps) {
             </form>
 
             <footer className="mt-8 text-gray-600">
-              Web App powered by <span className="text-emerald-600">NextJS</span> |{" "}
-              <span className="text-emerald-600">MongoDB</span>
+              Web App powered by{" "}
+              <a
+                href="https://nextjs.org"
+                target="_blank"
+                className="text-emerald-600 hover:underline"
+              >
+                NextJS
+              </a>{" "}
+              |{" "}
+              <a
+                href="https://www.mongodb.com"
+                target="_blank"
+                className="text-emerald-600 hover:underline"
+              >
+                MongoDB
+              </a>
             </footer>
           </div>
         </div>

@@ -76,8 +76,22 @@ export default async function Home() {
         </div>
 
         <footer className="mt-8 text-gray-600">
-          Web App powered by <span className="text-emerald-600">NextJS</span> |{" "}
-          <span className="text-emerald-600">MongoDB</span>
+          Web App powered by{" "}
+          <a
+            href="https://nextjs.org"
+            target="_blank"
+            className="text-emerald-600 hover:underline"
+          >
+            NextJS
+          </a>{" "}
+          |{" "}
+          <a
+            href="https://www.mongodb.com"
+            target="_blank"
+            className="text-emerald-600 hover:underline"
+          >
+            MongoDB
+          </a>
         </footer>
       </div>
     </div>
