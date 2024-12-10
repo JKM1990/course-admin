@@ -8,7 +8,7 @@ export default async function DeleteCoursePage({ params }: {
     const course = courses.find((c: CourseDocument) => c._id === params.id);
   
     if (!course) {
-      return <div>Technology not found</div>;
+      return <div>Course not found</div>;
     }
   
     return <DeleteCourse course={course} />;
