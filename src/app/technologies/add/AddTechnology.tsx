@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { CourseDocument, AddTechnologyProps } from "@/tools/data.model";
 import { sendJSONData } from "@/tools/Toolkit";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import sanitizeHtml from "sanitize-html";
 
 export default function AddTechnology({ courses }: AddTechnologyProps) {
   const router = useRouter();
@@ -18,11 +19,14 @@ export default function AddTechnology({ courses }: AddTechnologyProps) {
     e.preventDefault();
     setIsLoading(true);
 
+    const sanitizedName = sanitizeHtml(name);
+    const sanitizedDescription = sanitizeHtml(description);
+
     const response = await sendJSONData(
       "/api/technologies/create",
       {
-        name,
-        description,
+        name: sanitizedName,
+        description: sanitizedDescription,
         difficulty: parseInt(difficulty),
         courses: selectedCourses.map(courseCode => {
           const course = courses.find(c => c.code === courseCode);

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { EditTechnologyProps } from "@/tools/data.model";
 import { sendJSONData } from "@/tools/Toolkit";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import sanitizeHtml from "sanitize-html";
 
 export default function EditTechnology({ technology, courses }: EditTechnologyProps) {
   const router = useRouter();
@@ -20,19 +21,27 @@ export default function EditTechnology({ technology, courses }: EditTechnologyPr
     e.preventDefault();
     setIsLoading(true);
 
+    const sanitizedName = sanitizeHtml(name);
+    const sanitizedDescription = sanitizeHtml(description);
+    const sanitizedDifficulty = sanitizeHtml(difficulty);
+    const sanitizedSelectedCourses = selectedCourses.map((courseCode) =>
+      sanitizeHtml(courseCode)
+    );
+
+
     const response = await sendJSONData(
       `/api/technologies/update/${technology._id}`,
       {
-        name,
-        description,
-        difficulty: parseInt(difficulty),
-        courses: selectedCourses.map(courseCode => {
-          const course = courses.find(c => c.code === courseCode);
+        name: sanitizedName,
+        description: sanitizedDescription,
+        difficulty: parseInt(sanitizedDifficulty),
+        courses: sanitizedSelectedCourses.map((courseCode) => {
+          const course = courses.find((c) => c.code === courseCode);
           return {
             code: courseCode,
-            name: course?.name || ""
+            name: course?.name || "",
           };
-        })
+        }),
       },
       "PUT"
     );
