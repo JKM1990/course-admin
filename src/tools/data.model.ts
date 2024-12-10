@@ -26,3 +26,8 @@ export interface TechRosterData {
 export interface AddTechnologyProps {
     courses: Course[];
 }
+
+export interface EditTechnologyProps {
+    technology: Technology;
+    courses: CourseDocument[];
+}
