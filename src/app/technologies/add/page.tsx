@@ -1,34 +1,21 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { CourseDocument } from "@/tools/data.model";
+import type { CourseDocument, AddTechnologyProps } from "@/tools/data.model";
 import { sendJSONData } from "@/tools/Toolkit";
 import LoadingOverlay from "@/components/LoadingOverlay";
 
-export default function AddTechnology() {
+export default function AddTechnology({courses}: AddTechnologyProps) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [difficulty, setDifficulty] = useState("1");
-  const [courses, setCourses] = useState<CourseDocument[]>([]);
   const [selectedCourses, setSelectedCourses] = useState<string[]>([]);
-
-  // loading state
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      const response = await fetch("/api/all");
-      const data = await response.json();
-      setCourses(data.courses);
-    };
-    fetchCourses();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // set loading state
     setIsLoading(true);
 
     const response = await sendJSONData(
