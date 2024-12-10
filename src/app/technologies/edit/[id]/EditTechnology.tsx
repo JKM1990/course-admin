@@ -66,6 +66,7 @@ export default function EditTechnology({ technology, courses }: EditTechnologyPr
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              maxLength={50}
               required
               className="w-full p-2 border rounded bg-white"
             />
@@ -76,6 +77,7 @@ export default function EditTechnology({ technology, courses }: EditTechnologyPr
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              maxLength={500}
               required
               className="w-full p-2 border rounded bg-white h-32"
             />

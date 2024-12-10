@@ -57,6 +57,7 @@ export default function EditCourse({ course }: EditCourseProps) {
             <input
               type="text"
               value={course.code}
+              maxLength={8}
               disabled
               className="w-full p-2 border rounded bg-gray-100"
             />
@@ -68,6 +69,7 @@ export default function EditCourse({ course }: EditCourseProps) {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              maxLength={100}
               required
               className="w-full p-2 border rounded bg-white"
             />
