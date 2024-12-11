@@ -4,16 +4,21 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { sendJSONData } from "@/tools/Toolkit";
 import sanitizeHtml from "sanitize-html";
+import LoadingOverlay from "@/components/LoadingOverlay";
 
 export default function AddCourse() {
   const router = useRouter();
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     setErrorMessage("");
+    
 
     // convert the course code entered, to uppercase to check for distinct entry
     const sanitizedCode = sanitizeHtml(code.toUpperCase());
@@ -31,16 +36,20 @@ export default function AddCourse() {
 
     if (!response) {
       setErrorMessage("No response received");
+      setIsLoading(false);
       return;
     }
 
     if (response.status === 200) {
       router.push("/");
       router.refresh();
+      setIsLoading(false);
     } else if (response.status === 400) {
       setErrorMessage("Course code must be unique");
+      setIsLoading(false);
     } else {
       setErrorMessage("Error creating course");
+      setIsLoading(false);
     }
   };
 
