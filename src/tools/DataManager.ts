@@ -4,8 +4,8 @@ import sanitizeHtml from "sanitize-html";
 import { Technology, Course, CourseDocument, TechRosterData } from "@/tools/data.model";
 
 // MongoDB constants
-const MONGO_URL:string = "mongodb://mongo:27017/";
-const MONGO_DB_NAME:string = "dbTechs";	
+const MONGO_URL: string = process.env.MONGODB_URI!;
+const MONGO_DB_NAME: string = process.env.MONGODB_DB!;
 const MONGO_COLLECTION_TECHS:string = "technologies";
 const MONGO_COLLECTION_COURSES: string = "courses";
 
